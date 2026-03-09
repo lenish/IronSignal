@@ -1,24 +1,8 @@
 import { getNewsByDateRange, insertSummary, getSummary } from "./db";
 import { format, subDays } from "date-fns";
-import type { DailySummary } from "./types";
+import type { DailySummary, NewsItem } from "./types";
 
-export async function generateDailySummary(
-  dateStr?: string
-): Promise<DailySummary | null> {
-  const targetDate = dateStr
-    ? new Date(dateStr)
-    : subDays(new Date(), 1);
-  const formatted = format(targetDate, "yyyy-MM-dd");
-
-  const existing = await getSummary(formatted);
-  if (existing) return existing;
-
-  const startDate = `${formatted}T00:00:00.000Z`;
-  const endDate = `${formatted}T23:59:59.999Z`;
-  const news = await getNewsByDateRange(startDate, endDate);
-
-  if (news.length === 0) return null;
-
+async function callClaude(date: string, news: NewsItem[]): Promise<DailySummary | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     throw new Error("ANTHROPIC_API_KEY is not set");
@@ -51,7 +35,7 @@ export async function generateDailySummary(
       messages: [
         {
           role: "user",
-          content: `You are a commodity market analyst. Summarize the following commodity news from ${formatted} into a concise daily briefing.
+          content: `You are a commodity market analyst. Summarize the following commodity news from ${date} into a concise daily briefing.
 
 Structure:
 1. **Market Overview** - Overall market sentiment and key drivers
@@ -78,7 +62,36 @@ ${newsDigest}`,
   const summaryContent =
     data.content?.[0]?.text ?? "Summary generation failed.";
 
-  await insertSummary(formatted, summaryContent, commoditiesInNews.join(","));
+  await insertSummary(date, summaryContent, commoditiesInNews.join(","));
+  return await getSummary(date);
+}
 
-  return await getSummary(formatted);
+function getNewsForDate(date: string) {
+  return getNewsByDateRange(`${date}T00:00:00.000Z`, `${date}T23:59:59.999Z`);
+}
+
+export async function generateDailySummary(
+  dateStr?: string
+): Promise<DailySummary | null> {
+  const today = new Date();
+  const targetDate = dateStr ? new Date(dateStr) : today;
+  const formatted = format(targetDate, "yyyy-MM-dd");
+
+  const existing = await getSummary(formatted);
+  if (existing) return existing;
+
+  const news = await getNewsForDate(formatted);
+  if (news.length > 0) return callClaude(formatted, news);
+
+  // No explicit date: try yesterday as fallback
+  if (!dateStr) {
+    const yesterday = format(subDays(today, 1), "yyyy-MM-dd");
+    const existingYesterday = await getSummary(yesterday);
+    if (existingYesterday) return existingYesterday;
+
+    const yesterdayNews = await getNewsForDate(yesterday);
+    if (yesterdayNews.length > 0) return callClaude(yesterday, yesterdayNews);
+  }
+
+  return null;
 }

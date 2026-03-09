@@ -2,6 +2,31 @@ import type { FeedConfig, CommodityConfig, CommodityType } from "./types";
 
 export const RSS_FEEDS: FeedConfig[] = [
   {
+    url: "https://www.ft.com/commodities?format=rss",
+    name: "Financial Times Commodities",
+    category: "general",
+  },
+  {
+    url: "https://www.cnbc.com/id/100727362/device/rss/rss.html",
+    name: "CNBC International",
+    category: "general",
+  },
+  {
+    url: "https://feeds.marketwatch.com/marketwatch/topstories/",
+    name: "MarketWatch",
+    category: "general",
+  },
+  {
+    url: "https://www.investing.com/rss/news_25.rss",
+    name: "Investing.com Markets",
+    category: "general",
+  },
+  {
+    url: "https://www.investing.com/rss/news_14.rss",
+    name: "Investing.com Economy",
+    category: "general",
+  },
+  {
     url: "https://www.mining.com/feed/",
     name: "Mining.com",
     category: "general",
@@ -22,18 +47,13 @@ export const RSS_FEEDS: FeedConfig[] = [
     category: "general",
   },
   {
-    url: "https://www.kitco.com/news/category/base-metals/feed",
-    name: "Kitco Base Metals",
+    url: "https://news.google.com/rss/search?q=%22iron+ore%22+OR+%22copper+price%22+OR+%22aluminium%22+OR+%22LME%22&hl=en-US&gl=US&ceid=US:en",
+    name: "Google News Metals",
     category: "general",
   },
   {
-    url: "https://www.kitco.com/news/category/mining/feed",
-    name: "Kitco Mining",
-    category: "general",
-  },
-  {
-    url: "https://news.google.com/rss/search?q=iron+ore+copper+aluminium+commodity&hl=en-US&gl=US&ceid=US:en",
-    name: "Google News",
+    url: "https://news.google.com/rss/search?q=%22gold+price%22+OR+%22silver+price%22+OR+%22precious+metals%22&hl=en-US&gl=US&ceid=US:en",
+    name: "Google News Precious",
     category: "general",
   },
 ];
