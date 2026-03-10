@@ -1,4 +1,4 @@
-import type { FeedConfig, CommodityConfig, CommodityType } from "./types";
+import type { FeedConfig, CommodityConfig, CommodityType, ExchangeVariant } from "./types";
 
 export const RSS_FEEDS: FeedConfig[] = [
   {
@@ -269,6 +269,29 @@ export function classifyCommodity(
 
   return "general";
 }
+
+export const EXCHANGE_OPTIONS: Partial<Record<CommodityType, ExchangeVariant[]>> = {
+  copper: [
+    { key: "lme", label: "LME", symbol: "HG=F", unit: "/MT" },
+    { key: "comex", label: "COMEX", symbol: "HG=F", unit: "/lb", divisor: 2204.62 },
+  ],
+  gold: [
+    { key: "comex", label: "COMEX", symbol: "GC=F", unit: "/oz" },
+    { key: "spot", label: "Spot", symbol: "XAUUSD=X", unit: "/oz" },
+  ],
+  silver: [
+    { key: "comex", label: "COMEX", symbol: "SI=F", unit: "/oz" },
+    { key: "spot", label: "Spot", symbol: "XAGUSD=X", unit: "/oz" },
+  ],
+  platinum: [
+    { key: "comex", label: "COMEX", symbol: "PL=F", unit: "/oz" },
+    { key: "spot", label: "Spot", symbol: "XPTUSD=X", unit: "/oz" },
+  ],
+  palladium: [
+    { key: "comex", label: "COMEX", symbol: "PA=F", unit: "/oz" },
+    { key: "spot", label: "Spot", symbol: "XPDUSD=X", unit: "/oz" },
+  ],
+};
 
 export const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 export const NEWS_PAGE_SIZE = 50;

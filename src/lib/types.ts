@@ -74,6 +74,14 @@ export interface CommodityConfig {
   contract: string;
 }
 
+export interface ExchangeVariant {
+  key: string;
+  label: string;
+  symbol: string;
+  unit: string;
+  divisor?: number;
+}
+
 export interface FXRates {
   usdcny: number;
   usdaud: number;
