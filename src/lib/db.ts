@@ -71,7 +71,7 @@ export async function insertNews(items: NewsItem[]): Promise<number> {
   const stmts: InStatement[] = deduped.map((item) => ({
     sql: `INSERT INTO news (id, title, link, source, published_at, description, commodity, relevance_score)
           SELECT ?, ?, ?, ?, ?, ?, ?, ?
-          WHERE NOT EXISTS (SELECT 1 FROM news WHERE title = ? OR id = ?)`,
+          WHERE NOT EXISTS (SELECT 1 FROM news WHERE title = ? OR id = ? OR link = ?)`,
     args: [
       item.id,
       item.title,
@@ -83,6 +83,7 @@ export async function insertNews(items: NewsItem[]): Promise<number> {
       item.relevanceScore ?? 0.5,
       item.title,
       item.id,
+      item.link,
     ],
   }));
 

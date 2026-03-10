@@ -125,7 +125,7 @@ const COMMODITY_KEYWORDS: Record<CommodityType, string[]> = {
   ],
   nickel: [
     "nickel", "nickel price", "nickel ore",
-    "stainless steel", "nickel sulphate", "nickel pig iron",
+    "nickel sulphate", "nickel pig iron",
     "laterite", "class 1 nickel",
   ],
   zinc: [
@@ -150,9 +150,11 @@ const COMMODITY_KEYWORDS: Record<CommodityType, string[]> = {
   ],
   oil: [
     "crude oil", "brent crude", "wti crude",
-    "oil price", "opec", "petroleum",
+    "oil price", "oil prices", "opec", "petroleum",
     "barrel", "oil futures", "shale oil",
     "oil production", "refinery",
+    "oil plunge", "oil surge", "oil drop", "oil rally",
+    "oil dives", "oil falls", "oil jumps", "oil slides",
   ],
   natgas: [
     "natural gas", "natgas", "lng",
