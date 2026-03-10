@@ -1,5 +1,6 @@
 import PriceTicker from "@/components/PriceTicker";
 import PriceCharts from "@/components/PriceCharts";
+import MarketContext from "@/components/MarketContext";
 import NewsFeed from "@/components/NewsFeed";
 import DailySummary from "@/components/DailySummary";
 import Link from "next/link";
@@ -37,6 +38,7 @@ export default function Dashboard() {
 
       <PriceTicker />
       <PriceCharts />
+      <MarketContext />
 
       <div className="flex flex-1 overflow-hidden">
         <main className="flex-1 border-r border-border overflow-hidden flex flex-col min-w-0">
