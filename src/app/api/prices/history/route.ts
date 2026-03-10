@@ -65,12 +65,25 @@ export async function GET(request: NextRequest) {
   const range = searchParams.get("range") ?? "1mo";
   const symbolParam = searchParams.get("symbol");
 
-  const targets = symbolParam
+  const registered = symbolParam
     ? COMMODITIES.filter((c) => c.symbol === symbolParam)
     : COMMODITIES;
 
+  if (symbolParam && registered.length === 0) {
+    const adhoc: CommodityConfig = {
+      symbol: symbolParam,
+      name: symbolParam,
+      unit: "",
+      type: "general",
+      exchange: "",
+      contract: "",
+    };
+    const data = await fetchHistory(adhoc, range);
+    return NextResponse.json({ history: [{ symbol: symbolParam, name: symbolParam, exchange: "", data }] });
+  }
+
   const results = await Promise.all(
-    targets.map(async (c): Promise<CommodityHistory> => ({
+    registered.map(async (c): Promise<CommodityHistory> => ({
       symbol: c.symbol,
       name: c.name,
       exchange: c.exchange,
