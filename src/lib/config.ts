@@ -65,8 +65,8 @@ export const RSS_FEEDS: FeedConfig[] = [
 
 export const COMMODITIES: CommodityConfig[] = [
   { symbol: "TIO=F", name: "Iron Ore", unit: "/MT", type: "iron", exchange: "SGX", contract: "62% FE Fines" },
-  { symbol: "HG=F", name: "Copper", unit: "/lb", type: "copper", exchange: "COMEX", contract: "Futures" },
-  { symbol: "ALI=F", name: "Aluminium", unit: "/MT", type: "aluminium", exchange: "COMEX", contract: "Futures" },
+  { symbol: "HG=F", name: "Copper", unit: "/MT", type: "copper", exchange: "LME", contract: "Futures" },
+  { symbol: "ALI=F", name: "Aluminium", unit: "/MT", type: "aluminium", exchange: "LME", contract: "Futures" },
   { symbol: "GC=F", name: "Gold", unit: "/oz", type: "gold", exchange: "COMEX", contract: "Futures" },
   { symbol: "SI=F", name: "Silver", unit: "/oz", type: "silver", exchange: "COMEX", contract: "Futures" },
   { symbol: "PL=F", name: "Platinum", unit: "/oz", type: "platinum", exchange: "COMEX", contract: "Futures" },
@@ -116,7 +116,7 @@ const COMMODITY_KEYWORDS: Record<CommodityType, string[]> = {
     "hbi", "dri", "62% fe", "65% fe", "iron ore fines",
   ],
   copper: [
-    "copper", "comex copper", "copper cathode",
+    "copper", "lme copper", "copper cathode",
     "copper concentrate", "cu price", "red metal",
   ],
   aluminium: [
