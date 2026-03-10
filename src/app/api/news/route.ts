@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get("offset") ?? "0");
     const since = searchParams.get("since") ?? undefined;
 
-    const minRelevance = commodity === "all" ? 0.3 : 0;
+    const minRelevance = 0;
 
     const [news, total] = await Promise.all([
       getNews({ commodity, limit, offset, since, minRelevance }),

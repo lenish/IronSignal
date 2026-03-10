@@ -92,12 +92,14 @@ export async function getNews(options: {
   minRelevance?: number;
 }): Promise<NewsItem[]> {
   await ensureSchema();
-  const { commodity, limit = 50, offset = 0, since, minRelevance = 0.3 } = options;
+  const { commodity, limit = 50, offset = 0, since, minRelevance = 0 } = options;
 
   const conditions: string[] = [];
   const args: (string | number)[] = [];
 
-  if (commodity && commodity !== "all") {
+  const isAllView = !commodity || commodity === "all";
+
+  if (!isAllView) {
     conditions.push("commodity = ?");
     args.push(commodity);
   }
@@ -111,13 +113,16 @@ export async function getNews(options: {
   }
 
   const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+  const orderBy = isAllView
+    ? "ORDER BY published_at DESC"
+    : "ORDER BY relevance_score DESC, published_at DESC";
   args.push(limit, offset);
 
   const result = await getClient().execute({
     sql: `SELECT id, title, link, source, published_at as publishedAt,
                  description, commodity, relevance_score as relevanceScore, created_at as createdAt
           FROM news ${where}
-          ORDER BY relevance_score DESC, published_at DESC
+          ${orderBy}
           LIMIT ? OFFSET ?`,
     args,
   });
