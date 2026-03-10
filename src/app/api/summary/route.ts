@@ -7,11 +7,11 @@ export async function GET(request: NextRequest) {
   const date = searchParams.get("date");
 
   if (date) {
-    const summary = getSummary(date);
+    const summary = await getSummary(date);
     return NextResponse.json({ summary });
   }
 
-  const summaries = getRecentSummaries(7);
+  const summaries = await getRecentSummaries(7);
   return NextResponse.json({ summaries });
 }
 
