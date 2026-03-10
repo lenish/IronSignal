@@ -87,20 +87,20 @@ export interface CommodityMeta {
 }
 
 export const COMMODITY_META: Record<CommodityType, CommodityMeta> = {
-  iron:      { label: "IRON",    color: "#f59e0b", filterBg: "bg-amber-500",    newsClass: "text-amber-500 border-amber-500" },
-  copper:    { label: "CU",      color: "#ef4444", filterBg: "bg-red-500",      newsClass: "text-red-500 border-red-500" },
-  aluminium: { label: "ALUM",    color: "#06b6d4", filterBg: "bg-cyan-500",     newsClass: "text-cyan-500 border-cyan-500" },
-  nickel:    { label: "NI",      color: "#34d399", filterBg: "bg-emerald-400",  newsClass: "text-emerald-400 border-emerald-400" },
-  zinc:      { label: "ZN",      color: "#60a5fa", filterBg: "bg-blue-400",     newsClass: "text-blue-400 border-blue-400" },
-  gold:      { label: "GOLD",    color: "#eab308", filterBg: "bg-yellow-500",   newsClass: "text-yellow-500 border-yellow-500" },
-  silver:    { label: "AG",      color: "#9ca3af", filterBg: "bg-gray-400",     newsClass: "text-gray-400 border-gray-400" },
-  platinum:  { label: "PT",      color: "#a78bfa", filterBg: "bg-violet-400",   newsClass: "text-violet-400 border-violet-400" },
-  palladium: { label: "PD",      color: "#f472b6", filterBg: "bg-pink-400",     newsClass: "text-pink-400 border-pink-400" },
-  oil:       { label: "OIL",     color: "#d97706", filterBg: "bg-amber-600",    newsClass: "text-amber-600 border-amber-600" },
-  natgas:    { label: "GAS",     color: "#fb923c", filterBg: "bg-orange-400",   newsClass: "text-orange-400 border-orange-400" },
-  tin:       { label: "SN",    color: "#c084fc", filterBg: "bg-purple-400",  newsClass: "text-purple-400 border-purple-400" },
-  lead:      { label: "PB",    color: "#94a3b8", filterBg: "bg-slate-400",   newsClass: "text-slate-400 border-slate-400" },
-  general:   { label: "GEN",   color: "#64748b", filterBg: "bg-slate-500",   newsClass: "text-text-muted border-text-muted" },
+  iron:      { label: "IRON",      color: "#f59e0b", filterBg: "bg-amber-500",   newsClass: "text-amber-500 border-amber-500" },
+  copper:    { label: "COPPER",    color: "#ef4444", filterBg: "bg-red-500",     newsClass: "text-red-500 border-red-500" },
+  aluminium: { label: "ALUM",     color: "#06b6d4", filterBg: "bg-cyan-500",    newsClass: "text-cyan-500 border-cyan-500" },
+  nickel:    { label: "NICKEL",    color: "#34d399", filterBg: "bg-emerald-400", newsClass: "text-emerald-400 border-emerald-400" },
+  zinc:      { label: "ZINC",     color: "#60a5fa", filterBg: "bg-blue-400",    newsClass: "text-blue-400 border-blue-400" },
+  gold:      { label: "GOLD",     color: "#eab308", filterBg: "bg-yellow-500",  newsClass: "text-yellow-500 border-yellow-500" },
+  silver:    { label: "SILVER",    color: "#9ca3af", filterBg: "bg-gray-400",    newsClass: "text-gray-400 border-gray-400" },
+  platinum:  { label: "PLATINUM",  color: "#a78bfa", filterBg: "bg-violet-400",  newsClass: "text-violet-400 border-violet-400" },
+  palladium: { label: "PALLADIUM", color: "#f472b6", filterBg: "bg-pink-400",    newsClass: "text-pink-400 border-pink-400" },
+  oil:       { label: "OIL",      color: "#d97706", filterBg: "bg-amber-600",   newsClass: "text-amber-600 border-amber-600" },
+  natgas:    { label: "NATGAS",    color: "#fb923c", filterBg: "bg-orange-400",  newsClass: "text-orange-400 border-orange-400" },
+  tin:       { label: "TIN",      color: "#c084fc", filterBg: "bg-purple-400",  newsClass: "text-purple-400 border-purple-400" },
+  lead:      { label: "LEAD",     color: "#94a3b8", filterBg: "bg-slate-400",   newsClass: "text-slate-400 border-slate-400" },
+  general:   { label: "GEN",      color: "#64748b", filterBg: "bg-slate-500",   newsClass: "text-text-muted border-text-muted" },
 };
 
 export const TRACKED_COMMODITIES: CommodityType[] = [
