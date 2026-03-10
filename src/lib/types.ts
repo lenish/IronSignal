@@ -27,6 +27,8 @@ export interface CommodityPrice {
   changePercent: number;
   currency: string;
   fetchedAt: string;
+  exchange: string;
+  contract: string;
 }
 
 export interface PriceHistoryPoint {
@@ -37,6 +39,7 @@ export interface PriceHistoryPoint {
 export interface CommodityHistory {
   symbol: string;
   name: string;
+  exchange: string;
   data: PriceHistoryPoint[];
 }
 
@@ -59,6 +62,8 @@ export interface CommodityConfig {
   name: string;
   unit: string;
   type: CommodityType;
+  exchange: string;
+  contract: string;
 }
 
 export interface FXRates {

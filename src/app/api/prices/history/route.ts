@@ -68,6 +68,7 @@ export async function GET(request: NextRequest) {
     targets.map(async (c): Promise<CommodityHistory> => ({
       symbol: c.symbol,
       name: c.name,
+      exchange: c.exchange,
       data: await fetchHistory(c.symbol, range),
     }))
   );

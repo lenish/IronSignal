@@ -41,12 +41,17 @@ function MiniChart({ commodity }: { commodity: CommodityHistory }) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between px-2 pt-1.5">
-        <span
-          className="text-xs font-mono font-bold uppercase tracking-wider"
-          style={{ color: colors.stroke }}
-        >
-          {commodity.name}
-        </span>
+        <div className="flex items-center gap-1">
+          <span
+            className="text-xs font-mono font-bold uppercase tracking-wider"
+            style={{ color: colors.stroke }}
+          >
+            {commodity.name}
+          </span>
+          <span className="text-[10px] font-mono text-text-muted bg-bg-tertiary px-1 border border-border">
+            {commodity.exchange}
+          </span>
+        </div>
         <span
           className="text-xs font-mono"
           style={{ color: activeColor }}

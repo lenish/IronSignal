@@ -59,11 +59,11 @@ export const RSS_FEEDS: FeedConfig[] = [
 ];
 
 export const COMMODITIES: CommodityConfig[] = [
-  { symbol: "TIO=F", name: "Iron Ore", unit: "/MT", type: "iron" },
-  { symbol: "HG=F", name: "Copper", unit: "/lb", type: "copper" },
-  { symbol: "ALI=F", name: "Aluminium", unit: "/MT", type: "aluminium" },
-  { symbol: "GC=F", name: "Gold", unit: "/oz", type: "gold" },
-  { symbol: "SI=F", name: "Silver", unit: "/oz", type: "silver" },
+  { symbol: "TIO=F", name: "Iron Ore", unit: "/MT", type: "iron", exchange: "SGX", contract: "62% FE Fines" },
+  { symbol: "HG=F", name: "Copper", unit: "/lb", type: "copper", exchange: "COMEX", contract: "Futures" },
+  { symbol: "ALI=F", name: "Aluminium", unit: "/MT", type: "aluminium", exchange: "COMEX", contract: "Futures" },
+  { symbol: "GC=F", name: "Gold", unit: "/oz", type: "gold", exchange: "COMEX", contract: "Futures" },
+  { symbol: "SI=F", name: "Silver", unit: "/oz", type: "silver", exchange: "COMEX", contract: "Futures" },
 ];
 
 export const YAHOO_FINANCE_BASE =

@@ -18,9 +18,14 @@ function PriceItem({
     <div
       className={`flex items-center gap-2 px-4 py-2 border-r border-border font-mono text-sm whitespace-nowrap ${updated ? "animate-pulse-price" : ""}`}
     >
-      <span className="text-text-muted text-xs font-sans uppercase tracking-wider">
-        {price.name}
-      </span>
+      <div className="flex items-center gap-1">
+        <span className="text-text-muted text-xs font-sans uppercase tracking-wider">
+          {price.name}
+        </span>
+        <span className="text-[10px] font-mono text-text-muted bg-bg-tertiary px-1 border border-border">
+          {price.exchange}
+        </span>
+      </div>
       <span className="text-text-primary font-semibold">
         ${price.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
       </span>

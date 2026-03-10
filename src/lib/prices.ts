@@ -49,6 +49,8 @@ async function fetchSinglePrice(
       changePercent,
       currency: meta.currency ?? "USD",
       fetchedAt: new Date().toISOString(),
+      exchange: commodity.exchange,
+      contract: commodity.contract,
     };
   } catch (_) {
     return null;
