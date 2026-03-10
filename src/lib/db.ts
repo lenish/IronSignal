@@ -1,5 +1,6 @@
 import { createClient, type Client, type InStatement } from "@libsql/client";
 import type { NewsItem, DailySummary } from "./types";
+import { classifyCommodity, calculateRelevanceScore } from "./config";
 
 let _client: Client | null = null;
 
@@ -192,6 +193,40 @@ export async function getRecentSummaries(
     args: [limit],
   });
   return result.rows as unknown as DailySummary[];
+}
+
+export async function reclassifyNews(): Promise<number> {
+  await ensureSchema();
+  const client = getClient();
+
+  const result = await client.execute(
+    "SELECT id, title, description, source FROM news"
+  );
+
+  let updated = 0;
+  const batchSize = 20;
+  const stmts: InStatement[] = [];
+
+  for (const row of result.rows) {
+    const title = row.title as string;
+    const description = row.description as string | null;
+    const source = row.source as string;
+    const newCommodity = classifyCommodity(title, description);
+    const newScore = calculateRelevanceScore(title, description, source);
+
+    stmts.push({
+      sql: "UPDATE news SET commodity = ?, relevance_score = ? WHERE id = ?",
+      args: [newCommodity, newScore, row.id as string],
+    });
+  }
+
+  for (let i = 0; i < stmts.length; i += batchSize) {
+    const batch = stmts.slice(i, i + batchSize);
+    const results = await client.batch(batch, "write");
+    updated += results.reduce((sum, r) => sum + Number(r.rowsAffected), 0);
+  }
+
+  return updated;
 }
 
 export async function getNewsByDateRange(
