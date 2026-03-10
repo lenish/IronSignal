@@ -28,6 +28,7 @@ function ensureSchema(): Promise<void> {
           published_at TEXT NOT NULL,
           description TEXT,
           commodity TEXT DEFAULT 'general',
+          relevance_score REAL DEFAULT 0.5,
           created_at TEXT DEFAULT (datetime('now'))
         )`,
         `CREATE UNIQUE INDEX IF NOT EXISTS idx_news_link ON news(link)`,
@@ -42,7 +43,14 @@ function ensureSchema(): Promise<void> {
         )`,
       ],
       "write"
-    ).then(() => {});
+    ).then(async () => {
+      try {
+        await getClient().execute(
+          "ALTER TABLE news ADD COLUMN relevance_score REAL DEFAULT 0.5"
+        );
+      } catch {
+      }
+    });
   }
   return _schemaReady;
 }
@@ -52,8 +60,8 @@ export async function insertNews(items: NewsItem[]): Promise<number> {
   const client = getClient();
 
   const stmts: InStatement[] = items.map((item) => ({
-    sql: `INSERT OR IGNORE INTO news (id, title, link, source, published_at, description, commodity)
-          VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    sql: `INSERT OR IGNORE INTO news (id, title, link, source, published_at, description, commodity, relevance_score)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     args: [
       item.id,
       item.title,
@@ -62,6 +70,7 @@ export async function insertNews(items: NewsItem[]): Promise<number> {
       item.publishedAt,
       item.description ?? null,
       item.commodity ?? "general",
+      item.relevanceScore ?? 0.5,
     ],
   }));
 
@@ -101,7 +110,7 @@ export async function getNews(options: {
 
   const result = await getClient().execute({
     sql: `SELECT id, title, link, source, published_at as publishedAt,
-                 description, commodity, created_at as createdAt
+                 description, commodity, relevance_score as relevanceScore, created_at as createdAt
           FROM news ${where}
           ORDER BY published_at DESC
           LIMIT ? OFFSET ?`,
@@ -171,7 +180,7 @@ export async function getNewsByDateRange(
   await ensureSchema();
   const result = await getClient().execute({
     sql: `SELECT id, title, link, source, published_at as publishedAt,
-                 description, commodity, created_at as createdAt
+                 description, commodity, relevance_score as relevanceScore, created_at as createdAt
           FROM news
           WHERE published_at >= ? AND published_at < ?
           ORDER BY published_at DESC`,
