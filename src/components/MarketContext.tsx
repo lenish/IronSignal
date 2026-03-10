@@ -69,8 +69,9 @@ export default function MarketContext() {
   }, []);
 
   useEffect(() => {
-    fetchAll();
-    const interval = setInterval(fetchAll, 300_000);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchAll();
+    const interval = setInterval(() => void fetchAll(), 300_000);
     return () => clearInterval(interval);
   }, [fetchAll]);
 
