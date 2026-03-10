@@ -6,6 +6,7 @@ export interface NewsItem {
   publishedAt: string;
   description: string | null;
   commodity: CommodityType | null;
+  relevanceScore?: number;
   createdAt: string;
 }
 
@@ -58,4 +59,44 @@ export interface CommodityConfig {
   name: string;
   unit: string;
   type: CommodityType;
+}
+
+export interface FXRates {
+  usdcny: number;
+  usdaud: number;
+  dxy: number;
+  fetchedAt: string;
+}
+
+export interface EnergyPrice {
+  symbol: string;
+  name: string;
+  price: number;
+  change: number;
+  changePercent: number;
+  unit: string;
+  fetchedAt: string;
+}
+
+export interface EconomicIndicators {
+  fedRate: number | null;
+  cpi: number | null;
+  dollarIndex: number | null;
+  fetchedAt: string;
+  available: boolean;
+}
+
+export interface LMEInventoryItem {
+  metal: string;
+  metalCode: string;
+  stocks: number;
+  change: number;
+  date: string;
+}
+
+export interface LMEInventory {
+  available: boolean;
+  reason?: string;
+  items?: LMEInventoryItem[];
+  fetchedAt: string;
 }

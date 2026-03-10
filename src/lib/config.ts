@@ -113,6 +113,124 @@ const COMMODITY_KEYWORDS: Record<CommodityType, string[]> = {
   general: [],
 };
 
+const NEGATIVE_KEYWORDS: string[] = [
+  "nfl",
+  "nba",
+  "mlb",
+  "nhl",
+  "soccer",
+  "football",
+  "basketball",
+  "baseball",
+  "touchdown",
+  "superbowl",
+  "celebrity",
+  "movie",
+  "actor",
+  "actress",
+  "netflix",
+  "streaming",
+  "box office",
+  "hollywood",
+  "real estate",
+  "housing market",
+  "mortgage",
+  "foreclosure",
+  "home price",
+  "apartment",
+  "bitcoin",
+  "cryptocurrency",
+  "ethereum",
+  "blockchain",
+  "nft",
+  "defi",
+  "fda approval",
+  "drug trial",
+  "pharma",
+  "clinical trial",
+  "vaccine",
+  "iphone",
+  "ipad",
+  "android",
+  "app store",
+  "google play",
+  "software update",
+];
+
+const TIER_1_SOURCES = [
+  "Mining.com",
+  "Financial Times",
+  "Mining Technology",
+  "MetalMiner",
+];
+
+const PRIORITIES: CommodityType[] = [
+  "iron",
+  "copper",
+  "aluminium",
+  "gold",
+  "silver",
+];
+
+export function isRelevantToCommodities(
+  title: string,
+  description?: string | null
+): boolean {
+  const text = `${title} ${description ?? ""}`.toLowerCase();
+  const hasCommodityKeyword = PRIORITIES.some((commodity) =>
+    COMMODITY_KEYWORDS[commodity].some((kw) => text.includes(kw))
+  );
+  if (hasCommodityKeyword) return true;
+  const hasNegativeKeyword = NEGATIVE_KEYWORDS.some((kw) => text.includes(kw));
+  return !hasNegativeKeyword;
+}
+
+export function calculateRelevanceScore(
+  title: string,
+  description?: string | null,
+  source?: string
+): number {
+  const titleText = title.toLowerCase();
+  const descriptionText = (description ?? "").toLowerCase();
+  const combinedText = `${titleText} ${descriptionText}`;
+
+  let score = 0.5;
+  let titleMatches = 0;
+  let descriptionOnlyMatches = 0;
+
+  for (const commodity of PRIORITIES) {
+    for (const keyword of COMMODITY_KEYWORDS[commodity]) {
+      const inTitle = titleText.includes(keyword);
+      const inDescription = descriptionText.includes(keyword);
+      if (inTitle) {
+        titleMatches += 1;
+      } else if (inDescription) {
+        descriptionOnlyMatches += 1;
+      }
+    }
+  }
+
+  score += Math.min(titleMatches * 0.2, 0.4);
+  score += Math.min(descriptionOnlyMatches * 0.1, 0.2);
+
+  const hasNegativeKeyword = NEGATIVE_KEYWORDS.some((kw) =>
+    combinedText.includes(kw)
+  );
+  if (hasNegativeKeyword) {
+    score -= 0.3;
+  }
+
+  const normalizedSource = (source ?? "").toLowerCase();
+  const isTier1Source = TIER_1_SOURCES.some((tier1) =>
+    normalizedSource.includes(tier1.toLowerCase())
+  );
+  if (isTier1Source) {
+    score += 0.15;
+  }
+
+  return Math.min(1, Math.max(0, score));
+}
+
 export function classifyCommodity(
   title: string,
   description?: string | null
