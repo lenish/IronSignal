@@ -3,6 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import type { DailySummary as DailySummaryType } from "@/lib/types";
 
+interface MarketSnapshot {
+  usdcny?: number;
+  brent?: number;
+  wti?: number;
+}
+
 function renderContent(content: string) {
   const lines = content.split("\n");
   return lines.map((line, i) => {
@@ -57,6 +63,21 @@ export default function DailySummary() {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [market, setMarket] = useState<MarketSnapshot>({});
+
+  const fetchMarket = useCallback(async () => {
+    const [fxRes, energyRes] = await Promise.allSettled([
+      fetch("/api/fx").then((r) => (r.ok ? r.json() : null)),
+      fetch("/api/energy").then((r) => (r.ok ? r.json() : null)),
+    ]);
+    const fx = fxRes.status === "fulfilled" ? fxRes.value : null;
+    const energy = energyRes.status === "fulfilled" ? energyRes.value : null;
+    setMarket({
+      usdcny: fx?.usdcny,
+      brent: energy?.prices?.find((p: { symbol: string }) => p.symbol === "BZ=F")?.price,
+      wti: energy?.prices?.find((p: { symbol: string }) => p.symbol === "CL=F")?.price,
+    });
+  }, []);
 
   const fetchSummary = useCallback(async () => {
     try {
@@ -96,7 +117,9 @@ export default function DailySummary() {
 
   useEffect(() => {
     fetchSummary();
-  }, [fetchSummary]);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchMarket();
+  }, [fetchSummary, fetchMarket]);
 
   return (
     <div className="flex flex-col h-full">
@@ -123,7 +146,16 @@ export default function DailySummary() {
             <div className="skeleton w-5/6 h-3" />
           </div>
         ) : summary ? (
-          <div className="py-1">{renderContent(summary.content)}</div>
+          <div className="py-1">
+            {renderContent(summary.content)}
+            {(market.usdcny || market.brent || market.wti) && (
+              <div className="mt-3 pt-2 border-t border-border flex flex-wrap gap-3 text-[10px] font-mono text-text-muted">
+                {market.usdcny && <span>USD/CNY <span className="text-text-secondary">{market.usdcny.toFixed(4)}</span></span>}
+                {market.brent && <span>BRENT <span className="text-text-secondary">${market.brent.toFixed(2)}</span></span>}
+                {market.wti && <span>WTI <span className="text-text-secondary">${market.wti.toFixed(2)}</span></span>}
+              </div>
+            )}
+          </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-32 text-text-muted text-xs font-mono text-center gap-2">
             <span>No summary available</span>
