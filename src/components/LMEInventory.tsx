@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 
 interface LMEItem {
   metal: string;
-  stock: number;
+  stocks: number;
   change: number;
 }
 
@@ -79,7 +79,7 @@ export default function LMEInventory() {
                     {item.metal}
                   </td>
                   <td className="py-0.5 text-right text-text-primary">
-                    {item.stock.toLocaleString()}
+                    {item.stocks.toLocaleString()}
                   </td>
                   <td
                     className={`py-0.5 text-right ${item.change >= 0 ? "text-accent-green" : "text-accent-red"}`}

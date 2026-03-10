@@ -59,9 +59,18 @@ export async function insertNews(items: NewsItem[]): Promise<number> {
   await ensureSchema();
   const client = getClient();
 
-  const stmts: InStatement[] = items.map((item) => ({
-    sql: `INSERT OR IGNORE INTO news (id, title, link, source, published_at, description, commodity, relevance_score)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+  const seen = new Set<string>();
+  const deduped = items.filter((item) => {
+    const normalizedTitle = item.title.trim().toLowerCase();
+    if (seen.has(normalizedTitle)) return false;
+    seen.add(normalizedTitle);
+    return true;
+  });
+
+  const stmts: InStatement[] = deduped.map((item) => ({
+    sql: `INSERT INTO news (id, title, link, source, published_at, description, commodity, relevance_score)
+          SELECT ?, ?, ?, ?, ?, ?, ?, ?
+          WHERE NOT EXISTS (SELECT 1 FROM news WHERE title = ? OR id = ?)`,
     args: [
       item.id,
       item.title,
@@ -71,6 +80,8 @@ export async function insertNews(items: NewsItem[]): Promise<number> {
       item.description ?? null,
       item.commodity ?? "general",
       item.relevanceScore ?? 0.5,
+      item.title,
+      item.id,
     ],
   }));
 
