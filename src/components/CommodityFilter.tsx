@@ -23,7 +23,7 @@ export default function CommodityFilter({
   counts,
 }: CommodityFilterProps) {
   return (
-    <div className="flex items-center gap-1 px-2 py-2">
+    <div className="flex items-center gap-1 px-2 py-2 overflow-x-auto">
       {FILTERS.map((f) => {
         const isActive = active === f.key;
         return (
@@ -31,7 +31,7 @@ export default function CommodityFilter({
             key={f.key}
             onClick={() => onChange(f.key)}
             className={`
-              px-3 py-1 text-xs font-mono uppercase tracking-wider
+              px-3 py-1 text-xs font-mono uppercase tracking-wider shrink-0
               border transition-all duration-150
               ${
                 isActive

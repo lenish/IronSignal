@@ -16,13 +16,13 @@ function PriceItem({
 
   return (
     <div
-      className={`flex items-center gap-2 px-4 py-2 border-r border-border font-mono text-sm whitespace-nowrap ${updated ? "animate-pulse-price" : ""}`}
+      className={`flex items-center gap-1.5 md:gap-2 px-2.5 md:px-4 py-2 border-r border-border font-mono text-sm whitespace-nowrap ${updated ? "animate-pulse-price" : ""}`}
     >
       <div className="flex items-center gap-1">
         <span className="text-text-muted text-xs font-sans uppercase tracking-wider">
           {price.name}
         </span>
-        <span className="text-[10px] font-mono text-text-muted bg-bg-tertiary px-1 border border-border">
+        <span className="text-[10px] font-mono text-text-muted bg-bg-tertiary px-1 border border-border hidden sm:inline">
           {price.exchange}
         </span>
       </div>

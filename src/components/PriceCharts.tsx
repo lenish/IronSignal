@@ -122,9 +122,9 @@ function MiniChart({ commodity }: { commodity: CommodityHistory }) {
 
 function SkeletonCharts() {
   return (
-    <div className="grid grid-cols-5 gap-px bg-border h-[140px]">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-border">
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="bg-bg-secondary p-2">
+        <div key={i} className="bg-bg-secondary p-2 h-[120px] lg:h-[140px]">
           <div className="flex justify-between mb-2">
             <div className="skeleton w-16 h-3" />
             <div className="skeleton w-14 h-3" />
@@ -160,9 +160,9 @@ export default function PriceCharts() {
   if (history.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-5 gap-px bg-border h-[140px]">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-border">
       {history.map((h) => (
-        <div key={h.symbol} className="bg-bg-secondary overflow-hidden">
+        <div key={h.symbol} className="bg-bg-secondary overflow-hidden h-[120px] lg:h-[140px]">
           <MiniChart commodity={h} />
         </div>
       ))}

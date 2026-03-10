@@ -239,7 +239,7 @@ function SentimentChart({
         </ResponsiveContainer>
       </div>
 
-      <div className="px-4 py-2 border-t border-border flex items-center gap-4">
+      <div className="px-4 py-2 border-t border-border flex items-center gap-2 md:gap-4 flex-wrap">
         <span className="text-[10px] font-mono text-text-muted uppercase tracking-wider">
           AVG
         </span>
@@ -300,7 +300,7 @@ export default function SummaryPage() {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col min-h-screen md:h-screen md:overflow-hidden">
       <header className="flex items-center justify-between px-4 py-2 bg-bg-secondary border-b border-border">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3">
@@ -322,8 +322,38 @@ export default function SummaryPage() {
         </Link>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
-        <aside className="w-56 shrink-0 border-r border-border bg-bg-secondary overflow-y-auto">
+      <div className="md:hidden border-b border-border bg-bg-secondary">
+        <div className="flex overflow-x-auto">
+          {loading ? (
+            <div className="flex gap-2 p-2">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="skeleton w-20 h-7 shrink-0" />
+              ))}
+            </div>
+          ) : summaries.length === 0 ? (
+            <div className="p-2 text-xs text-text-muted font-mono">
+              No summaries
+            </div>
+          ) : (
+            summaries.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => setSelected(s)}
+                className={`shrink-0 px-3 py-2 text-xs font-mono border-r border-border transition-colors ${
+                  selected?.id === s.id
+                    ? "bg-bg-tertiary text-text-primary"
+                    : "text-text-secondary"
+                }`}
+              >
+                {s.date}
+              </button>
+            ))
+          )}
+        </div>
+      </div>
+
+      <div className="flex flex-col md:flex-row flex-1 md:overflow-hidden">
+        <aside className="hidden md:block w-56 shrink-0 border-r border-border bg-bg-secondary overflow-y-auto">
           <div className="px-3 py-2 border-b border-border">
             <span className="text-xs font-mono text-text-muted uppercase tracking-widest">
               Recent
@@ -359,7 +389,7 @@ export default function SummaryPage() {
           )}
         </aside>
 
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <SentimentChart
             sentiment={sentiment}
             totalArticles={totalArticles}

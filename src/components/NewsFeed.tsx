@@ -67,7 +67,7 @@ function NewsItemRow({ item }: { item: NewsItem }) {
             {item.title}
           </h3>
           {item.description && (
-            <p className="text-xs text-text-secondary mt-1 line-clamp-2 leading-relaxed">
+            <p className="text-xs text-text-secondary mt-1 line-clamp-1 md:line-clamp-2 leading-relaxed">
               {item.description}
             </p>
           )}

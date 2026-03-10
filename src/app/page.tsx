@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function Dashboard() {
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col min-h-screen md:h-screen md:overflow-hidden">
       <header className="flex items-center justify-between px-4 py-2 bg-bg-secondary border-b border-border">
         <div className="flex items-center gap-3">
           <h1 className="text-sm font-mono font-bold tracking-widest text-text-primary">
@@ -41,8 +41,8 @@ export default function Dashboard() {
       <PriceCharts />
       <MarketContext />
 
-      <div className="flex flex-1 overflow-hidden">
-        <main className="flex-1 border-r border-border overflow-hidden flex flex-col min-w-0">
+      <div className="flex flex-col md:flex-row flex-1 md:overflow-hidden">
+        <main className="flex-1 md:border-r border-b md:border-b-0 border-border overflow-hidden flex flex-col min-w-0 min-h-[60vh] md:min-h-0">
           <div className="px-3 py-1.5 border-b border-border">
             <span className="text-xs font-mono text-text-muted uppercase tracking-widest">
               News Feed
@@ -51,7 +51,7 @@ export default function Dashboard() {
           <NewsFeed />
         </main>
 
-        <aside className="w-[380px] shrink-0 overflow-hidden flex flex-col bg-bg-secondary overflow-y-auto">
+        <aside className="w-full md:w-[380px] md:shrink-0 overflow-hidden flex flex-col bg-bg-secondary md:overflow-y-auto">
           <DailySummary />
           <LMEInventory />
         </aside>
@@ -61,7 +61,7 @@ export default function Dashboard() {
         <span className="text-xs font-mono text-text-muted">
           IronSignal v0.1.0
         </span>
-         <span className="text-xs font-mono text-text-muted">
+         <span className="text-xs font-mono text-text-muted hidden md:inline">
            Sources: FT Commodities · CNBC · Mining.com · MarketWatch · Investing.com · MetalMiner · Mining Technology
          </span>
       </footer>
