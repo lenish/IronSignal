@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ summary });
   }
 
-  const summaries = await getRecentSummaries(7);
+  const summaries = await getRecentSummaries(30);
   return NextResponse.json({ summaries });
 }
 
