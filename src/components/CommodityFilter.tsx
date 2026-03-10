@@ -1,14 +1,14 @@
 "use client";
 
-import type { CommodityType } from "@/lib/types";
+import { COMMODITY_META, TRACKED_COMMODITIES } from "@/lib/config";
 
 const FILTERS: { key: string; label: string; color: string }[] = [
   { key: "all", label: "ALL", color: "bg-accent-blue" },
-  { key: "iron", label: "IRON", color: "bg-accent-amber" },
-  { key: "copper", label: "COPPER", color: "bg-accent-red" },
-  { key: "aluminium", label: "ALUM", color: "bg-accent-cyan" },
-  { key: "gold", label: "GOLD", color: "bg-yellow-500" },
-  { key: "silver", label: "SILVER", color: "bg-gray-400" },
+  ...TRACKED_COMMODITIES.map((key) => ({
+    key,
+    label: COMMODITY_META[key].label,
+    color: COMMODITY_META[key].filterBg,
+  })),
 ];
 
 interface CommodityFilterProps {

@@ -13,22 +13,15 @@ import {
 } from "recharts";
 import type { DailySummary } from "@/lib/types";
 import type { SentimentDataPoint } from "@/lib/sentiment";
+import { COMMODITY_META, TRACKED_COMMODITIES } from "@/lib/config";
 
-const COMMODITY_COLORS: Record<string, string> = {
-  iron: "#f59e0b",
-  copper: "#ef4444",
-  aluminium: "#06b6d4",
-  gold: "#eab308",
-  silver: "#9ca3af",
-};
+const COMMODITY_COLORS: Record<string, string> = Object.fromEntries(
+  TRACKED_COMMODITIES.map((key) => [key, COMMODITY_META[key].color])
+);
 
-const COMMODITY_LABELS: Record<string, string> = {
-  iron: "IRON",
-  copper: "COPPER",
-  aluminium: "ALUM",
-  gold: "GOLD",
-  silver: "SILVER",
-};
+const COMMODITY_LABELS: Record<string, string> = Object.fromEntries(
+  TRACKED_COMMODITIES.map((key) => [key, COMMODITY_META[key].label])
+);
 
 function renderContent(content: string) {
   const lines = content.split("\n");
@@ -97,7 +90,7 @@ function SentimentChart({
   loading: boolean;
 }) {
   const [visible, setVisible] = useState<Set<string>>(
-    new Set(["iron", "copper", "aluminium", "gold", "silver"])
+    new Set(["iron", "copper", "aluminium", "nickel", "zinc", "gold", "silver"])
   );
 
   const toggle = (commodity: string) => {

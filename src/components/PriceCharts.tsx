@@ -10,14 +10,15 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import type { CommodityHistory } from "@/lib/types";
+import { COMMODITIES, COMMODITY_META } from "@/lib/config";
 
-const CHART_COLORS: Record<string, { stroke: string; fill: string }> = {
-  "TIO=F": { stroke: "#f59e0b", fill: "#f59e0b" },
-  "HG=F": { stroke: "#ef4444", fill: "#ef4444" },
-  "ALI=F": { stroke: "#06b6d4", fill: "#06b6d4" },
-  "GC=F": { stroke: "#eab308", fill: "#eab308" },
-  "SI=F": { stroke: "#9ca3af", fill: "#9ca3af" },
-};
+const CHART_COLORS: Record<string, { stroke: string; fill: string }> =
+  Object.fromEntries(
+    COMMODITIES.map((c) => {
+      const color = COMMODITY_META[c.type]?.color ?? "#3b82f6";
+      return [c.symbol, { stroke: color, fill: color }];
+    })
+  );
 
 function MiniChart({ commodity }: { commodity: CommodityHistory }) {
   const colors = CHART_COLORS[commodity.symbol] ?? {

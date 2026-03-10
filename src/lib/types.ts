@@ -14,8 +14,16 @@ export type CommodityType =
   | "iron"
   | "copper"
   | "aluminium"
+  | "nickel"
+  | "zinc"
+  | "tin"
+  | "lead"
   | "gold"
   | "silver"
+  | "platinum"
+  | "palladium"
+  | "oil"
+  | "natgas"
   | "general";
 
 export interface CommodityPrice {

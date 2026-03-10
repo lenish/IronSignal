@@ -18,14 +18,7 @@ function timeAgo(dateStr: string): string {
   return `${diffDay}d ago`;
 }
 
-const COMMODITY_COLORS: Record<string, string> = {
-  iron: "text-accent-amber border-accent-amber",
-  copper: "text-accent-red border-accent-red",
-  aluminium: "text-accent-cyan border-accent-cyan",
-  gold: "text-yellow-500 border-yellow-500",
-  silver: "text-gray-400 border-gray-400",
-  general: "text-text-muted border-text-muted",
-};
+import { COMMODITY_META } from "@/lib/config";
 
 function RelevanceDot({ score }: { score?: number }) {
   if (!score || score <= 0.4) return null;
@@ -34,9 +27,8 @@ function RelevanceDot({ score }: { score?: number }) {
 }
 
 function NewsItemRow({ item }: { item: NewsItem }) {
-  const commodityColor =
-    COMMODITY_COLORS[item.commodity ?? "general"] ??
-    COMMODITY_COLORS.general;
+  const meta = COMMODITY_META[(item.commodity ?? "general") as keyof typeof COMMODITY_META];
+  const commodityColor = meta?.newsClass ?? COMMODITY_META.general.newsClass;
 
   return (
     <a

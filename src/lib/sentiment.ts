@@ -1,4 +1,5 @@
 import type { NewsItem, CommodityType } from "./types";
+import { TRACKED_COMMODITIES } from "./config";
 
 const POSITIVE_KEYWORDS = [
   "surge", "surges", "surging",
@@ -61,12 +62,7 @@ export function scoreSentiment(title: string, description?: string | null): numb
 
 export interface SentimentDataPoint {
   date: string;
-  iron: number;
-  copper: number;
-  aluminium: number;
-  gold: number;
-  silver: number;
-  general: number;
+  [commodity: string]: number | string;
 }
 
 export function aggregateSentiment(
@@ -74,15 +70,15 @@ export function aggregateSentiment(
   days: number = 30
 ): SentimentDataPoint[] {
   const now = new Date();
-  const commodities: CommodityType[] = ["iron", "copper", "aluminium", "gold", "silver", "general"];
+  const commodities: CommodityType[] = [...TRACKED_COMMODITIES, "general"];
 
-  const dailyScores: Record<string, Record<CommodityType, number[]>> = {};
+  const dailyScores: Record<string, Record<string, number[]>> = {};
 
   for (let i = days - 1; i >= 0; i--) {
     const d = new Date(now);
     d.setDate(d.getDate() - i);
     const key = d.toISOString().slice(0, 10);
-    dailyScores[key] = {} as Record<CommodityType, number[]>;
+    dailyScores[key] = {};
     for (const c of commodities) {
       dailyScores[key][c] = [];
     }
@@ -90,7 +86,7 @@ export function aggregateSentiment(
 
   for (const item of news) {
     const dateKey = item.publishedAt.slice(0, 10);
-    const commodity = (item.commodity ?? "general") as CommodityType;
+    const commodity = item.commodity ?? "general";
     if (dailyScores[dateKey]?.[commodity]) {
       const score = scoreSentiment(item.title, item.description);
       dailyScores[dateKey][commodity].push(score);
@@ -100,15 +96,7 @@ export function aggregateSentiment(
   return Object.entries(dailyScores)
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([date, commodityScores]) => {
-      const point: SentimentDataPoint = {
-        date,
-        iron: 0,
-        copper: 0,
-        aluminium: 0,
-        gold: 0,
-        silver: 0,
-        general: 0,
-      };
+      const point: SentimentDataPoint = { date };
       for (const c of commodities) {
         const scores = commodityScores[c];
         point[c] = scores.length > 0
