@@ -57,9 +57,9 @@ export default function Dashboard() {
         <span className="text-xs font-mono text-text-muted">
           IronSignal v0.1.0
         </span>
-        <span className="text-xs font-mono text-text-muted">
-          Sources: Mining.com · Kitco · MetalMiner · Mining Technology · Google News
-        </span>
+         <span className="text-xs font-mono text-text-muted">
+           Sources: FT Commodities · CNBC · Mining.com · MarketWatch · Investing.com · MetalMiner · Mining Technology
+         </span>
       </footer>
     </div>
   );
