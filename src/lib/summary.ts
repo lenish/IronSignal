@@ -1,6 +1,8 @@
 import { getNewsByDateRange, insertSummary, getSummary } from "./db";
 import { format, subDays } from "date-fns";
 import type { DailySummary, NewsItem } from "./types";
+import { fetchFXRates } from "./fx";
+import { fetchEnergyPrices } from "./energy";
 
 async function callClaude(date: string, news: NewsItem[]): Promise<DailySummary | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -21,6 +23,31 @@ async function callClaude(date: string, news: NewsItem[]): Promise<DailySummary 
   const commoditiesInNews = [
     ...new Set(news.map((n) => n.commodity).filter(Boolean)),
   ];
+
+  let marketContext = "";
+  try {
+    const [fxData, energyData] = await Promise.allSettled([
+      fetchFXRates(),
+      fetchEnergyPrices(),
+    ]);
+
+    const fx = fxData.status === "fulfilled" ? fxData.value : null;
+    const energy = energyData.status === "fulfilled" ? energyData.value : [];
+
+    if (fx || energy.length > 0) {
+      marketContext = "\n\nCurrent Market Context:\n";
+      if (fx) {
+        marketContext += `FX: USD/CNY ${fx.usdcny.toFixed(4)}, USD/AUD ${fx.usdaud.toFixed(4)}, DXY ${fx.dxy.toFixed(2)}\n`;
+      }
+      if (energy.length > 0) {
+        const brent = energy.find((e) => e.symbol === "BZ=F");
+        const wti = energy.find((e) => e.symbol === "CL=F");
+        if (brent) marketContext += `Brent Crude: $${brent.price.toFixed(2)}\n`;
+        if (wti) marketContext += `WTI Crude: $${wti.price.toFixed(2)}\n`;
+      }
+    }
+  } catch (_) {
+  }
 
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -45,7 +72,7 @@ Structure:
 5. **Outlook** - Key things to watch
 
 Keep it professional, concise, data-driven. Use bullet points. No fluff.
-
+${marketContext}
 News articles:
 ${newsDigest}`,
         },
