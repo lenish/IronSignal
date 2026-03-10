@@ -126,9 +126,7 @@ export async function getNews(options: {
   }
 
   const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
-  const orderBy = isAllView
-    ? "ORDER BY published_at DESC"
-    : "ORDER BY relevance_score DESC, published_at DESC";
+  const orderBy = "ORDER BY published_at DESC";
   args.push(limit, offset);
 
   const result = await getClient().execute({

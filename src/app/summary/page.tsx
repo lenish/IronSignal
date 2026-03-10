@@ -14,6 +14,7 @@ import {
 import type { DailySummary } from "@/lib/types";
 import type { SentimentDataPoint } from "@/lib/sentiment";
 import { COMMODITY_META, TRACKED_COMMODITIES } from "@/lib/config";
+import { exportSummaryPDF } from "@/lib/pdf";
 
 const COMMODITY_COLORS: Record<string, string> = Object.fromEntries(
   TRACKED_COMMODITIES.map((key) => [key, COMMODITY_META[key].color])
@@ -262,25 +263,43 @@ function SentimentChart({
   );
 }
 
+function formatSummaryDate(date: string): string {
+  if (date.includes("~")) {
+    const [start, end] = date.split("~");
+    return `${start} — ${end}`;
+  }
+  return date;
+}
+
+function isWeeklySummary(date: string): boolean {
+  return date.includes("~");
+}
+
 export default function SummaryPage() {
   const [summaries, setSummaries] = useState<DailySummary[]>([]);
   const [selected, setSelected] = useState<DailySummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState<number | null>(null);
+  const [genError, setGenError] = useState<string | null>(null);
   const [sentiment, setSentiment] = useState<SentimentDataPoint[]>([]);
   const [sentimentLoading, setSentimentLoading] = useState(true);
   const [totalArticles, setTotalArticles] = useState(0);
 
-  useEffect(() => {
+  const fetchSummaries = () => {
     fetch("/api/summary")
       .then((res) => res.json())
       .then((data) => {
         setSummaries(data.summaries ?? []);
-        if (data.summaries?.length > 0) {
+        if (data.summaries?.length > 0 && !selected) {
           setSelected(data.summaries[0]);
         }
       })
       .catch((_) => {})
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchSummaries();
 
     fetch("/api/sentiment?days=30")
       .then((res) => res.json())
@@ -291,6 +310,29 @@ export default function SummaryPage() {
       .catch((_) => {})
       .finally(() => setSentimentLoading(false));
   }, []);
+
+  const handleGenerate = async (days: number) => {
+    setGenerating(days);
+    setGenError(null);
+    try {
+      const res = await fetch("/api/summary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ days }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setGenError(data.error ?? "Generation failed");
+        return;
+      }
+      setSelected(data.summary);
+      fetchSummaries();
+    } catch {
+      setGenError("Network error");
+    } finally {
+      setGenerating(null);
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen md:h-screen md:overflow-hidden">
@@ -307,13 +349,42 @@ export default function SummaryPage() {
             Summaries
           </span>
         </div>
-        <Link
-          href="/"
-          className="text-xs font-mono text-text-secondary hover:text-text-primary transition-colors"
-        >
-          &larr; DASHBOARD
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => handleGenerate(1)}
+            disabled={generating !== null}
+            className="text-xs font-mono px-2 py-1 border border-border text-text-secondary hover:border-accent-blue hover:text-accent-blue transition-colors disabled:opacity-50"
+          >
+            {generating === 1 ? "..." : "GEN 1D"}
+          </button>
+          <button
+            onClick={() => handleGenerate(7)}
+            disabled={generating !== null}
+            className="text-xs font-mono px-2 py-1 border border-border text-text-secondary hover:border-accent-cyan hover:text-accent-cyan transition-colors disabled:opacity-50"
+          >
+            {generating === 7 ? "..." : "GEN 7D"}
+          </button>
+          {selected && (
+            <button
+              onClick={() => exportSummaryPDF(selected)}
+              className="text-xs font-mono px-2 py-1 border border-border text-text-secondary hover:border-accent-green hover:text-accent-green transition-colors"
+            >
+              PDF
+            </button>
+          )}
+          <Link
+            href="/"
+            className="text-xs font-mono text-text-secondary hover:text-text-primary transition-colors"
+          >
+            &larr; DASH
+          </Link>
+        </div>
       </header>
+      {genError && (
+        <div className="px-4 py-1.5 bg-accent-red/10 border-b border-accent-red/30">
+          <span className="text-xs font-mono text-accent-red">{genError}</span>
+        </div>
+      )}
 
       <div className="md:hidden border-b border-border bg-bg-secondary">
         <div className="flex overflow-x-auto">
@@ -338,7 +409,10 @@ export default function SummaryPage() {
                     : "text-text-secondary"
                 }`}
               >
-                {s.date}
+                {isWeeklySummary(s.date) && (
+                  <span className="text-accent-cyan mr-1">W</span>
+                )}
+                {formatSummaryDate(s.date)}
               </button>
             ))
           )}
@@ -373,7 +447,12 @@ export default function SummaryPage() {
                     : "text-text-secondary hover:bg-bg-tertiary hover:text-text-primary"
                 }`}
               >
-                <div className="text-xs">{s.date}</div>
+                <div className="text-xs flex items-center gap-1">
+                  {isWeeklySummary(s.date) && (
+                    <span className="text-accent-cyan font-bold">W</span>
+                  )}
+                  <span>{formatSummaryDate(s.date)}</span>
+                </div>
                 <div className="text-xs text-text-muted mt-0.5 truncate">
                   {s.commodities || "General"}
                 </div>
@@ -393,10 +472,10 @@ export default function SummaryPage() {
             <div className="max-w-3xl">
               <div className="flex items-center gap-3 mb-6">
                 <h2 className="text-lg font-mono font-bold text-text-primary">
-                  Daily Briefing
+                  {isWeeklySummary(selected.date) ? "Weekly Briefing" : "Daily Briefing"}
                 </h2>
                 <span className="text-sm font-mono text-text-muted">
-                  {selected.date}
+                  {formatSummaryDate(selected.date)}
                 </span>
               </div>
               <div>{renderContent(selected.content)}</div>

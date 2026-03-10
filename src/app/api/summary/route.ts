@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSummary, getRecentSummaries } from "@/lib/db";
-import { generateDailySummary } from "@/lib/summary";
+import { generateDailySummary, generatePeriodSummary } from "@/lib/summary";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -18,12 +18,16 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
   const date = body.date as string | undefined;
+  const days = body.days as number | undefined;
 
   try {
-    const summary = await generateDailySummary(date);
+    const summary = days && days > 1
+      ? await generatePeriodSummary(days)
+      : await generateDailySummary(date);
+
     if (!summary) {
       return NextResponse.json(
-        { error: "No news found for the specified date" },
+        { error: "No news found for the specified period" },
         { status: 404 }
       );
     }
