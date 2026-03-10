@@ -3,6 +3,7 @@ import PriceCharts from "@/components/PriceCharts";
 import MarketContext from "@/components/MarketContext";
 import NewsFeed from "@/components/NewsFeed";
 import DailySummary from "@/components/DailySummary";
+import LMEInventory from "@/components/LMEInventory";
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -50,8 +51,9 @@ export default function Dashboard() {
           <NewsFeed />
         </main>
 
-        <aside className="w-[380px] shrink-0 overflow-hidden flex flex-col bg-bg-secondary">
+        <aside className="w-[380px] shrink-0 overflow-hidden flex flex-col bg-bg-secondary overflow-y-auto">
           <DailySummary />
+          <LMEInventory />
         </aside>
       </div>
 
