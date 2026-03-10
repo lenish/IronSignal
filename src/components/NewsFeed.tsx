@@ -27,6 +27,12 @@ const COMMODITY_COLORS: Record<string, string> = {
   general: "text-text-muted border-text-muted",
 };
 
+function RelevanceDot({ score }: { score?: number }) {
+  if (!score || score <= 0.4) return null;
+  if (score > 0.7) return <span className="text-xs text-accent-green shrink-0">●</span>;
+  return <span className="text-xs text-yellow-500 shrink-0">●</span>;
+}
+
 function NewsItemRow({ item }: { item: NewsItem }) {
   const commodityColor =
     COMMODITY_COLORS[item.commodity ?? "general"] ??
@@ -42,6 +48,7 @@ function NewsItemRow({ item }: { item: NewsItem }) {
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
+            <RelevanceDot score={item.relevanceScore} />
             <span className="text-text-muted text-xs font-mono shrink-0">
               {timeAgo(item.publishedAt)}
             </span>

@@ -89,9 +89,10 @@ export async function getNews(options: {
   limit?: number;
   offset?: number;
   since?: string;
+  minRelevance?: number;
 }): Promise<NewsItem[]> {
   await ensureSchema();
-  const { commodity, limit = 50, offset = 0, since } = options;
+  const { commodity, limit = 50, offset = 0, since, minRelevance = 0.3 } = options;
 
   const conditions: string[] = [];
   const args: (string | number)[] = [];
@@ -104,6 +105,10 @@ export async function getNews(options: {
     conditions.push("published_at > ?");
     args.push(since);
   }
+  if (minRelevance > 0) {
+    conditions.push("relevance_score >= ?");
+    args.push(minRelevance);
+  }
 
   const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
   args.push(limit, offset);
@@ -112,7 +117,7 @@ export async function getNews(options: {
     sql: `SELECT id, title, link, source, published_at as publishedAt,
                  description, commodity, relevance_score as relevanceScore, created_at as createdAt
           FROM news ${where}
-          ORDER BY published_at DESC
+          ORDER BY relevance_score DESC, published_at DESC
           LIMIT ? OFFSET ?`,
     args,
   });
